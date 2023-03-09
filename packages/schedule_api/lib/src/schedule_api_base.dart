@@ -13,11 +13,11 @@ class ScheduleApi {
     _apiRepository = ApiRepository(_dio);
   }
 
-  Future<Map<String, dynamic>> getTeacherSchedule(
+  Future<List<dynamic>> getTeacherSchedule(
     String teacher,
-    DateTime dateTime,
+    String dateTime,
   ) async {
-    return {};
+    return await _apiRepository.getTeacherSchedule(teacher, dateTime);
   }
 
   Future<List<dynamic>> getGroupSchedule(

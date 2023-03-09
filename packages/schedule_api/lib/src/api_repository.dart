@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 
@@ -56,6 +57,22 @@ class ApiRepository {
     } on DioError catch (error) {
       log(error.message, error: error.message);
       rethrow;
+    }
+  }
+
+  Future<List<dynamic>> getTeacherSchedule(
+    String teacher,
+    String dateTime,
+  ) async {
+    try {
+      Response response = await _dio.get(
+        '$_apiLink/schedule_teacher',
+        queryParameters: {'date': dateTime, 'teacher': teacher},
+      );
+      if (response.statusCode == 200) return json.decode(response.data);
+      throw Exception('Ошибка получения данных с сервера');
+    } on SocketException {
+      throw Exception('Отсутствует интернет соединение');
     }
   }
 

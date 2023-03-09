@@ -74,7 +74,11 @@ class CacheInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) async {
     final segments = response.realUri.pathSegments;
-    final methods = ['schedule_group', 'schedule_teacher', 'schedule_auditorium'];
+    final methods = [
+      'schedule_group',
+      // 'schedule_teacher',
+      // 'schedule_auditorium'
+    ];
     if (segments.every((element) => methods.contains(element))) {
       _handleResponse(response, handler);
     }
@@ -90,12 +94,13 @@ class CacheInterceptor extends Interceptor {
     final parameters = options.uri.queryParameters;
     if (segments.contains('schedule_group')) {
       _handleRequestGroup(options, handler, parameters);
-    } else if (segments.contains('schedule_teacher')) {
-      _handleRequestAuditorium(options, handler, parameters);
-    } else if (segments.contains('schedule_auditorium')) {
-      _handleRequestTeacher(options, handler, parameters);
     } else {
       handler.next(options);
     }
+    // } else if (segments.contains('schedule_teacher')) {
+    //   _handleRequestAuditorium(options, handler, parameters);
+    // } else if (segments.contains('schedule_auditorium')) {
+    //   _handleRequestTeacher(options, handler, parameters);
+    // } else {
   }
 }
