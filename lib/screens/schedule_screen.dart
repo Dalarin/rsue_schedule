@@ -4,7 +4,8 @@ import 'package:rsue_schedule/blocs/schedule_bloc/schedule_bloc.dart';
 import 'package:rsue_schedule/models/schedule.dart';
 import 'package:rsue_schedule/widgets/calendar_widget.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:rsue_schedule/widgets/schedule_widget.dart';
+import 'package:rsue_schedule/widgets/group_schedule_widget.dart';
+import 'package:rsue_schedule/widgets/teacher_schedule_widget.dart';
 
 class ScheduleScreen extends StatelessWidget {
   final Map<String, String> request;
@@ -96,12 +97,22 @@ class ScheduleScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildWidgetDependOnRequest(Schedule schedule, int index) {
+    if (request.keys.contains('group')) {
+      return GroupScheduleWidget(schedule: schedule, index: index);
+    } else if (request.keys.contains('teacher')) {
+      return TeacherScheduleWidget(schedule: schedule, index: index);
+    } else {
+      return GroupScheduleWidget(schedule: schedule, index: index);
+    }
+  }
+
   Widget _buildAnimatedListView(BuildContext context, List<Schedule> schedule) {
     if (schedule.isNotEmpty) {
       return AnimationLimiter(
         child: ListView.builder(
           itemBuilder: (_, index) {
-            return ScheduleWidget(schedule: schedule[index], index: index);
+            return _buildWidgetDependOnRequest(schedule[index], index);
           },
           itemCount: schedule.length,
           shrinkWrap: true,

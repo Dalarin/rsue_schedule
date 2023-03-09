@@ -26,6 +26,22 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
   ) async {
     try {
       emit(ScheduleLoading());
+      if (event.dateTime.weekday != DateTime.sunday) {
+        final schedule = await _repository.getTeacherSchedule(
+          event.teacher,
+          DateFormat('dd.MM.yyyy').format(event.dateTime),
+        );
+        if (schedule != null) {
+          emit(ScheduleLoaded(
+            schedule: schedule,
+            selectedDate: event.dateTime,
+          ));
+        } else {
+          emit(const ScheduleError(message: 'Ошибка загрузки расписания'));
+        }
+      } else {
+        emit(ScheduleLoaded(schedule: [], selectedDate: event.dateTime));
+      }
     } on Exception {
       emit(const ScheduleError(message: 'Ошибка загрузки расписания'));
     }
@@ -45,7 +61,10 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
           DateFormat('dd.MM.yyyy').format(event.dateTime),
         );
         if (schedule != null) {
-          emit(ScheduleLoaded(schedule: schedule, selectedDate: event.dateTime));
+          emit(ScheduleLoaded(
+            schedule: schedule,
+            selectedDate: event.dateTime,
+          ));
         } else {
           emit(const ScheduleError(message: 'Ошибка загрузки расписания'));
         }

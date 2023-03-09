@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:rsue_schedule/models/schedule.dart';
 
-class ScheduleWidget extends StatelessWidget {
-  final int index;
+class TeacherScheduleWidget extends StatelessWidget {
   final Schedule schedule;
-
-  const ScheduleWidget({Key? key, required this.schedule, required this.index})
-      : super(key: key);
+  final int index;
+  const TeacherScheduleWidget({Key? key, required this.schedule, required this.index}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +22,7 @@ class ScheduleWidget extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(schedule.type),
-                Text(schedule.teacher),
+                Text(schedule.group),
                 Text('ауд. ${schedule.auditorium}'),
               ],
             ),

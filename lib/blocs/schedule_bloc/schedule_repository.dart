@@ -13,6 +13,14 @@ class ScheduleRepository {
     return list;
   }
 
+  Future<List<Schedule>?> getTeacherSchedule(
+    String teacher,
+    String date,
+  ) async {
+    final map = await _api.getTeacherSchedule(teacher, date);
+    return map.map((elem) => Schedule.fromMap(elem)).toList();
+  }
+
   Future<List<Schedule>?> getAuditoriumSchedule(
     String auditorium,
     String dateTime,
