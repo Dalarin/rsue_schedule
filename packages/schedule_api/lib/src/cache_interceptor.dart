@@ -34,38 +34,11 @@ class CacheInterceptor extends Interceptor {
     }
   }
 
-  _handleRequestAuditorium(
-    RequestOptions options,
-    RequestInterceptorHandler handler,
-    Map<String, dynamic> parameters,
-  ) async {
-    var date = parameters['date'].toString().split('.').reversed;
-    final dates = DateTime.parse(date.join('-'));
-    final aud = options.uri.queryParameters['auditorium'];
-    final data = await _dbHelper.getAuditoriumScheduleFromDB(aud!, dates);
-    if (data.isNotEmpty) {
-      var response = Response(
-        requestOptions: options,
-        statusCode: 200,
-        data: data,
-      );
-      return handler.resolve(response);
-    } else {
-      handler.next(options);
-    }
-  }
-
-  _handleRequestTeacher(
-    RequestOptions options,
-    RequestInterceptorHandler handler,
-    Map<String, dynamic> parameters,
-  ) {}
-
   _handleResponse(
     Response response,
     ResponseInterceptorHandler handler,
   ) async {
-    final decodedJson = jsonDecode(response.data);
+    final decodedJson = response.data;
     for (var json in decodedJson) {
       await _dbHelper.insertRecord(json);
     }
@@ -74,13 +47,11 @@ class CacheInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) async {
     final segments = response.realUri.pathSegments;
-    final methods = [
-      'schedule_group',
-      // 'schedule_teacher',
-      // 'schedule_auditorium'
-    ];
-    if (segments.every((element) => methods.contains(element))) {
-      _handleResponse(response, handler);
+    final method = 'schedule_group';
+    if (response.statusCode == 200) {
+      if (segments.contains(method)) {
+        _handleResponse(response, handler);
+      }
     }
     return handler.next(response);
   }
@@ -97,10 +68,5 @@ class CacheInterceptor extends Interceptor {
     } else {
       handler.next(options);
     }
-    // } else if (segments.contains('schedule_teacher')) {
-    //   _handleRequestAuditorium(options, handler, parameters);
-    // } else if (segments.contains('schedule_auditorium')) {
-    //   _handleRequestTeacher(options, handler, parameters);
-    // } else {
   }
 }

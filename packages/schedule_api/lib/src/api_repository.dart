@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:schedule_api/src/exceptions.dart';
 
 class ApiRepository {
   final Dio _dio;
@@ -25,13 +26,11 @@ class ApiRepository {
         },
       );
       if (response.statusCode == 200) {
-        if (response.data.runtimeType.toString() != 'QueryResultSet') {
-          return jsonDecode(response.data);
-        }
         return response.data;
-      } else {
-        throw Exception('Ошибка получения данных с сервера');
+      } else if (response.statusCode == 400) {
+        throw ScheduleException(response.data);
       }
+      throw ScheduleException('Ошибка получения данных с сервера');
     } on DioError catch (error) {
       log(error.message, error: error.message);
       rethrow;
@@ -52,8 +51,10 @@ class ApiRepository {
       );
       if (response.statusCode == 200) {
         return response.data;
+      } else if (response.statusCode == 400) {
+        throw ScheduleException(response.data);
       }
-      throw Exception('Ошибка получения данных с сервера');
+      throw ScheduleException('Ошибка получения данных с сервера');
     } on DioError catch (error) {
       log(error.message, error: error.message);
       rethrow;
@@ -69,10 +70,32 @@ class ApiRepository {
         '$_apiLink/schedule_teacher',
         queryParameters: {'date': dateTime, 'teacher': teacher},
       );
-      if (response.statusCode == 200) return json.decode(response.data);
-      throw Exception('Ошибка получения данных с сервера');
+      if (response.statusCode == 200) {
+        return response.data;
+      } else if (response.statusCode == 400) {
+        throw ScheduleException(response.data);
+      }
+      throw ScheduleException('Ошибка получения данных с сервера');
     } on SocketException {
-      throw Exception('Отсутствует интернет соединение');
+      throw ScheduleException('Отсутствует интернет соединение');
+    }
+  }
+
+  Future<List<String>> getTeachersByQuery(String query) async {
+    try {
+      Response response = await _dio.get(
+        '$_apiLink/find_teachers',
+        queryParameters: {'teacher': query},
+      );
+      if (response.statusCode == 200) {
+        return response.data;
+      } else if (response.statusCode == 400) {
+        throw ScheduleException(response.data);
+      }
+      throw ScheduleException('Ошибка получения данных с сервера');
+    } on DioError catch (error) {
+      log(error.message, error: error.message);
+      rethrow;
     }
   }
 
@@ -83,10 +106,11 @@ class ApiRepository {
         queryParameters: {'group': group},
       );
       if (response.statusCode == 200) {
-        final decoded = jsonDecode(response.data) as List;
-        return decoded.map((element) => element.toString()).toList();
+        return response.data;
+      } else if (response.statusCode == 400) {
+        throw ScheduleException(response.data);
       }
-      throw Exception('Ошибка получения данных с сервера');
+      throw ScheduleException('Ошибка получения данных с сервера');
     } on DioError catch (error) {
       log(error.message, error: error.message);
       rethrow;

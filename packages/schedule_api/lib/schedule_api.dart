@@ -4,4 +4,5 @@
 library schedule_api;
 
 export 'src/schedule_api_base.dart';
+export 'src/exceptions.dart';
 
