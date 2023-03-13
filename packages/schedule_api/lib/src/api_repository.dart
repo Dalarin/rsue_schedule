@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -37,7 +36,7 @@ class ApiRepository {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getAuditoriumSchedule(
+  Future<List<dynamic>> getAuditoriumSchedule(
     String auditorium,
     String dateTime,
   ) async {
@@ -81,7 +80,7 @@ class ApiRepository {
     }
   }
 
-  Future<List<String>> getTeachersByQuery(String query) async {
+  Future<List<dynamic>> getTeachersByQuery(String query) async {
     try {
       Response response = await _dio.get(
         '$_apiLink/find_teachers',
@@ -99,11 +98,29 @@ class ApiRepository {
     }
   }
 
-  Future<List<String>> getTeachersForGroup(String group) async {
+  Future<List<dynamic>> getTeachersForGroup(String group) async {
     try {
       Response response = await _dio.get(
         '$_apiLink/teachers',
         queryParameters: {'group': group},
+      );
+      if (response.statusCode == 200) {
+        return response.data;
+      } else if (response.statusCode == 400) {
+        throw ScheduleException(response.data);
+      }
+      throw ScheduleException('Ошибка получения данных с сервера');
+    } on DioError catch (error) {
+      log(error.message, error: error.message);
+      rethrow;
+    }
+  }
+
+  Future<List<dynamic>> getAuditoriumByQuery(String query) async {
+    try {
+      Response response = await _dio.get(
+        '$_apiLink/find_auditorium',
+        queryParameters: {'auditorium': query},
       );
       if (response.statusCode == 200) {
         return response.data;

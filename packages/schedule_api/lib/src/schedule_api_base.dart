@@ -33,7 +33,7 @@ class ScheduleApi {
   }
 
   /// Возвращает расписание [auditorium] для указанного [dateTime]
-  Future<List<Map<String, dynamic>>> getAuditoriumSchedule(
+  Future<List<dynamic>> getAuditoriumSchedule(
     String auditorium,
     String dateTime,
   ) async {
@@ -41,12 +41,17 @@ class ScheduleApi {
   }
 
   /// Возвращает список преподавателей для указанной [group]
-  Future<List<String>> getTeachersForGroup(String group) async {
+  Future<List<dynamic>> getTeachersForGroup(String group) async {
     return await _apiRepository.getTeachersForGroup(group);
   }
 
   /// Возвращает список преподавателей для запроса, введенного пользователем
-  Future<List<String>> getTeachersByQuery(String query) async {
+  Future<List<dynamic>> getTeachersByQuery(String query) async {
     return await _apiRepository.getTeachersByQuery(query);
+  }
+
+  /// Возвращает список аудиторий для запроса, введенного пользователем
+  Future<List<dynamic>> getAuditoriumByQuery(String query) async {
+    return await _apiRepository.getAuditoriumByQuery(query);
   }
 }
