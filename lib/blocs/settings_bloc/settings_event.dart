@@ -8,7 +8,9 @@ abstract class SettingsEvent extends Equatable {
 }
 
 class ChangeSettings extends SettingsEvent {
-  final Settings settings;
+  final ThemeMode themeMode;
+  final String group;
+  final ScheduleBloc? bloc;
 
-  const ChangeSettings(this.settings);
+  const ChangeSettings(this.themeMode, this.group, {this.bloc});
 }

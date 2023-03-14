@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rive/rive.dart';
 import 'package:rsue_schedule/blocs/schedule_bloc/schedule_bloc.dart';
 import 'package:rsue_schedule/models/schedule.dart';
+import 'package:rsue_schedule/widgets/auditorium_schedule_widget.dart';
 import 'package:rsue_schedule/widgets/calendar_widget.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:rsue_schedule/widgets/group_schedule_widget.dart';
@@ -86,7 +88,7 @@ class ScheduleScreen extends StatelessWidget {
             if (state is ScheduleLoaded) {
               return _buildAnimatedListView(context, state.schedule);
             } else if (state is ScheduleError) {
-              return Text(state.message);
+              return _buildErrorWidget(context, state.message);
             } else if (state is ScheduleLoading) {
               return const Center(child: CircularProgressIndicator());
             }
@@ -103,7 +105,7 @@ class ScheduleScreen extends StatelessWidget {
     } else if (request.keys.contains('teacher')) {
       return TeacherScheduleWidget(schedule: schedule, index: index);
     } else {
-      return GroupScheduleWidget(schedule: schedule, index: index);
+      return AuditoriumScheduleWidget(schedule: schedule, index: index);
     }
   }
 
@@ -119,9 +121,44 @@ class ScheduleScreen extends StatelessWidget {
         ),
       );
     }
+    return _buildEmptyListWidget(context);
+  }
 
-    return const Center(
-      child: Text('Отсутствуют пары в данный день'),
+  Widget _buildErrorWidget(BuildContext context, String message) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.5,
+          width: MediaQuery.of(context).size.width * 0.7,
+          child: const RiveAnimation.asset(
+            'assets/anims/error.riv',
+          ),
+        ),
+        Text(
+          message,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEmptyListWidget(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.5,
+          width: MediaQuery.of(context).size.width * 0.7,
+          child: const RiveAnimation.asset(
+            'assets/anims/sleep.riv',
+          ),
+        ),
+        Text(
+          'Пар сегодня нет, можете расслабиться',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+      ],
     );
   }
 }

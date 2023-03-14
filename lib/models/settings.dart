@@ -4,7 +4,7 @@ class Settings {
   ThemeMode themeMode;
   String group;
 
-  static Settings defaultSettings = Settings(ThemeMode.light, 'ПРИ-331');
+  static Settings defaultSettings = Settings(ThemeMode.light, '');
 
   Settings(this.themeMode, this.group);
 

@@ -45,7 +45,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           ),
           NavigationDestination(
             icon: Icon(Icons.person),
-            label: 'Преподаватели',
+            label: 'Препод',
           ),
           NavigationDestination(
             icon: Icon(Icons.meeting_room_rounded),

@@ -31,6 +31,17 @@ class ScheduleRepository {
   }
 
   Future<List<String>?> getTeachersForGroup(String group) async {
-    return await _api.getTeachersForGroup(group);
+    final map = await _api.getTeachersForGroup(group);
+    return map.map((element) => element.toString()).toList();
+  }
+
+  Future<List<String>?> getTeacherFromQuery(String query) async {
+    final map = await _api.getTeachersByQuery(query);
+    return map.map((element) => element.toString()).toList();
+  }
+
+  Future<List<String>?> getAuditoriumFromQuery(String query) async {
+    final map = await _api.getAuditoriumByQuery(query);
+    return map.map((element) => element.toString()).toList();
   }
 }

@@ -4,80 +4,44 @@ import 'package:rive/rive.dart';
 import 'package:rsue_schedule/blocs/schedule_bloc/schedule_bloc.dart';
 import 'package:rsue_schedule/screens/schedule_screen.dart';
 
-class AuditoriumScreen extends StatelessWidget {
-  const AuditoriumScreen({Key? key}) : super(key: key);
+class SearchScreen extends StatelessWidget {
+  const SearchScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ScheduleBloc>(
-      create: (_) => ScheduleBloc(),
+      create: (context) => ScheduleBloc(),
       child: Builder(
         builder: (context) {
           return Scaffold(
-            appBar: AppBar(
-              title: const Text('Аудитории'),
-            ),
+            appBar: _buildAppBar(context),
             body: SafeArea(
-              child: CustomScrollView(
-                slivers: [
-                  _buildAppBar(context),
-                  _buildAuditoriumScreenBody(context),
-                ],
-              ),
+              child: _buildSearchPageBody(context),
             ),
           );
+        },
+      ),
+    );
+  }
+
+  Widget _buildSearchPageBody(BuildContext context) {
+    return BlocBuilder<ScheduleBloc, ScheduleState>(
+      builder: (context, state) {
+        if (state is ScheduleLoading) {
+          return _buildLoadingWidget();
+        } else if (state is ScheduleTeacherLoaded) {
+          return _buildListView(context, state.teachers);
+        } else if (state is ScheduleError) {
+          return _buildErrorWidget(context, state.message);
+        } else {
+          return _buildListView(context, []);
         }
-      ),
+      },
     );
   }
 
-  Widget _buildElementsDependsOnState(
-      BuildContext context, ScheduleState state) {
-    if (state is ScheduleLoading) {
-      return _buildLoadingWidget();
-    } else if (state is ScheduleAuditoriumLoaded) {
-      return _buildListView(context, state.auditorium);
-    } else if (state is ScheduleError) {
-      return _buildErrorWidget(context, state.message);
-    }
-    return _buildListView(context, []);
-  }
-
-  Widget _buildAuditoriumScreenBody(BuildContext context) {
-    return SliverFillRemaining(
-      child: BlocBuilder<ScheduleBloc, ScheduleState>(
-        builder: _buildElementsDependsOnState,
-      ),
-    );
-  }
-
-  SliverAppBar _buildAppBar(BuildContext context) {
-    return SliverAppBar(
-      flexibleSpace: FlexibleSpaceBar(
-        background: Column(
-          children: [
-            Container(
-              height: 50,
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: TextField(
-                onSubmitted: (text) {
-                  final bloc = context.read<ScheduleBloc>();
-                  bloc.add(GetAuditoriumFromQuery(text));
-                },
-                decoration: const InputDecoration(
-                  suffixIcon: Icon(Icons.search),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildListView(BuildContext context, List<String> auditorium) {
-    if (auditorium.isNotEmpty) {
+  Widget _buildListView(BuildContext context, List<String> teachers) {
+    if (teachers.isNotEmpty) {
       return ListView.builder(
         shrinkWrap: true,
         itemBuilder: (context, index) {
@@ -86,14 +50,14 @@ class AuditoriumScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => ScheduleScreen({'auditorium': auditorium[index]}),
+                  builder: (_) => ScheduleScreen({'teacher': teachers[index]}),
                 ),
               );
             },
-            title: Text(auditorium[index]),
+            title: Text(teachers[index]),
           );
         },
-        itemCount: auditorium.length,
+        itemCount: teachers.length,
       );
     }
     return _buildEmptyListWidget(context);
@@ -141,6 +105,33 @@ class AuditoriumScreen extends StatelessWidget {
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ],
+      ),
+    );
+  }
+
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      title: const Text('Поиск'),
+      bottom: PreferredSize(
+        preferredSize: const Size(double.infinity, 50),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: TextField(
+            autofocus: true,
+            onSubmitted: (text) {
+              final bloc = context.read<ScheduleBloc>();
+              bloc.add(GetTeachersFromQuery(text));
+            },
+            decoration: InputDecoration(
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

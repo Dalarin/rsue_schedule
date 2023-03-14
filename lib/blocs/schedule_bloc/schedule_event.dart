@@ -42,3 +42,15 @@ class GetTeachersForGroup extends ScheduleEvent {
 
   const GetTeachersForGroup(this.group);
 }
+
+class GetTeachersFromQuery extends ScheduleEvent {
+  final String query;
+
+  const GetTeachersFromQuery(this.query);
+}
+
+class GetAuditoriumFromQuery extends ScheduleEvent {
+  final String query;
+
+  const GetAuditoriumFromQuery(this.query);
+}

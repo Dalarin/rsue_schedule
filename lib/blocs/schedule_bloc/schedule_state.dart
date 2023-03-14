@@ -36,3 +36,12 @@ class ScheduleTeacherLoaded extends ScheduleState {
     required this.teachers,
   });
 }
+
+class ScheduleAuditoriumLoaded extends ScheduleState {
+  final List<String> auditorium;
+
+  const ScheduleAuditoriumLoaded({
+    required this.auditorium,
+  });
+}
+

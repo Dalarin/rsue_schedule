@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rsue_schedule/blocs/settings_bloc/settings_bloc.dart';
+import 'package:rsue_schedule/screens/invite_screen.dart';
 import 'package:rsue_schedule/themes/themes.dart';
 import 'package:rsue_schedule/widgets/bottom_nav_bar.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -21,6 +22,9 @@ class Application extends StatelessWidget {
     return BlocProvider<SettingsBloc>(
       create: (context) => SettingsBloc(),
       child: BlocBuilder<SettingsBloc, SettingsState>(
+        buildWhen: (prevState, newState) {
+          return newState is! SettingsError;
+        },
         builder: (context, state) {
           if (state is SettingsLoading) {
             return const Center(child: CircularProgressIndicator());
@@ -36,13 +40,20 @@ class Application extends StatelessWidget {
               ],
               home: BlocProvider<SettingsBloc>.value(
                 value: context.read<SettingsBloc>(),
-                child: const BottomNavBar(),
+                child: Builder(
+                  builder: (context) {
+                    if (state.settings.group.isNotEmpty) {
+                      return const BottomNavBar();
+                    }
+                    return InviteScreen(context.read<SettingsBloc>());
+                  },
+                ),
               ),
             );
           }
           return const Center(child: CircularProgressIndicator());
         },
-      )
+      ),
     );
   }
 }

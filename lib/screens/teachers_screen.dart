@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rive/rive.dart';
 import 'package:rsue_schedule/blocs/schedule_bloc/schedule_bloc.dart';
 import 'package:rsue_schedule/blocs/settings_bloc/settings_bloc.dart';
 import 'package:rsue_schedule/screens/schedule_screen.dart';
+import 'package:rsue_schedule/screens/search_page.dart';
 
 class TeacherScreen extends StatelessWidget {
   final SettingsBloc bloc;
@@ -19,10 +21,45 @@ class TeacherScreen extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Преподаватели'),
         ),
-        body: SafeArea(
-          child: BlocBuilder<ScheduleBloc, ScheduleState>(
-            builder: _buildElementsDependsOnState,
-          ),
+        body: CustomScrollView(
+          slivers: [
+            _buildAppBar(context),
+            SliverFillRemaining(
+              child: BlocBuilder<ScheduleBloc, ScheduleState>(
+                builder: _buildElementsDependsOnState,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  SliverAppBar _buildAppBar(BuildContext context) {
+    return SliverAppBar(
+      flexibleSpace: FlexibleSpaceBar(
+        background: Column(
+          children: [
+            Container(
+              height: 50,
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: TextField(
+                readOnly: true,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const SearchScreen(),
+                    ),
+                  );
+                },
+                decoration: const InputDecoration(
+                  suffixIcon: Icon(Icons.search),
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -36,14 +73,58 @@ class TeacherScreen extends StatelessWidget {
       return _buildLoadingElement();
     } else if (state is ScheduleTeacherLoaded) {
       return _buildTeacherList(context, state.teachers);
+    } else if (state is ScheduleError) {
+      return _buildErrorWidget(context, state.message);
     } else {
-      return _buildTeacherList(context, []);
+      return _buildLoadingElement();
     }
+  }
+
+  Widget _buildErrorWidget(BuildContext context, String message) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.5,
+            width: MediaQuery.of(context).size.width * 0.7,
+            child: const RiveAnimation.asset(
+              'assets/anims/error.riv',
+            ),
+          ),
+          Text(
+            message,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildLoadingElement() {
     return const Center(
       child: CircularProgressIndicator(),
+    );
+  }
+
+  Widget _buildEmptyListWidget(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.5,
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: const RiveAnimation.asset(
+              'assets/anims/empty.riv',
+            ),
+          ),
+          Text(
+            'Отсутствует список преподавателей',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+        ],
+      ),
     );
   }
 
@@ -74,6 +155,6 @@ class TeacherScreen extends StatelessWidget {
         itemCount: teachers.length,
       );
     }
-    return const Text('Отсутствует список преподавателей');
+    return _buildEmptyListWidget(context);
   }
 }

@@ -149,6 +149,22 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  graphs:
+    dependency: transitive
+    description:
+      name: graphs
+      sha256: f9e130f3259f52d26f0cfc0e964513796dafed572fa52e45d2f8d6ca14db39b2
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
+  http:
+    dependency: transitive
+    description:
+      name: http
+      sha256: "6aa2946395183537c8b880962d935877325d6a09a2867c3970c05c0fed6ac482"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.13.5"
   http_parser:
     dependency: transitive
     description:
@@ -277,6 +293,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.5"
+  rive:
+    dependency: "direct main"
+    description:
+      name: rive
+      sha256: "22e3755b75f4ea4492d2fecf4fc2acf1c8d0073df39781d290a20cbfe74c3760"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.1"
   schedule_api:
     dependency: "direct main"
     description:
