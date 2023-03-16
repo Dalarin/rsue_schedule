@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rsue_schedule/blocs/settings_bloc/settings_bloc.dart';
+import 'package:rsue_schedule/generated/l10n.dart';
 import 'package:rsue_schedule/widgets/bottom_nav_bar.dart';
 
 class InviteScreen extends StatelessWidget {
@@ -78,13 +79,13 @@ class InviteScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Расписание РГЭУ (РИНХ)',
+          S.of(context).inviteScreenTitle,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold
           ),
         ),
         Text(
-          'Добро пожаловать\nВведите ваш номер группы',
+          S.of(context).welcomeText,
           style: Theme.of(context).textTheme.titleMedium,
         ),
       ],
@@ -95,7 +96,7 @@ class InviteScreen extends StatelessWidget {
     return TextField(
       controller: _controller,
       decoration: InputDecoration(
-        hintText: 'ПРИ-331',
+        hintText: 'ПРИ-331...',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -112,7 +113,7 @@ class InviteScreen extends StatelessWidget {
           final bloc = context.read<SettingsBloc>();
           bloc.add(ChangeSettings(bloc.settings.themeMode, _controller.text));
         },
-        child: const Text('Подтвердить'),
+        child: Text(S.of(context).confirmButton),
       ),
     );
   }

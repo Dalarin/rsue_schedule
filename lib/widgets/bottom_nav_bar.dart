@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rsue_schedule/blocs/settings_bloc/settings_bloc.dart';
+import 'package:rsue_schedule/generated/l10n.dart';
 import 'package:rsue_schedule/screens/auditorium_screen.dart';
 import 'package:rsue_schedule/screens/schedule_screen.dart';
 import 'package:rsue_schedule/screens/settings_screen.dart';
@@ -38,22 +39,22 @@ class _BottomNavBarState extends State<BottomNavBar> {
     return Scaffold(
       body: _screens[_currentIndex],
       bottomNavigationBar: NavigationBar(
-        destinations: const [
+        destinations: [
           NavigationDestination(
-            icon: Icon(Icons.home_work_outlined),
-            label: 'Дом',
+            icon: const Icon(Icons.home_work_outlined),
+            label: S.of(context).home,
           ),
           NavigationDestination(
-            icon: Icon(Icons.person),
-            label: 'Препод',
+            icon: const Icon(Icons.person),
+            label: S.of(context).teacher,
           ),
           NavigationDestination(
-            icon: Icon(Icons.meeting_room_rounded),
-            label: 'Аудитории',
+            icon: const Icon(Icons.meeting_room_rounded),
+            label: S.of(context).auditories,
           ),
           NavigationDestination(
-            icon: Icon(Icons.settings),
-            label: 'Настройки',
+            icon: const Icon(Icons.settings),
+            label: S.of(context).settings,
           )
         ],
         onDestinationSelected: _onDestinationSelected,

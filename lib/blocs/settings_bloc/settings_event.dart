@@ -14,3 +14,7 @@ class ChangeSettings extends SettingsEvent {
 
   const ChangeSettings(this.themeMode, this.group, {this.bloc});
 }
+
+class ClearCache extends SettingsEvent {
+  const ClearCache();
+}

@@ -22,3 +22,9 @@ class SettingsError extends SettingsState {
 
   const SettingsError(this.message);
 }
+
+class CachedDataDeleted extends SettingsState {
+  final String message;
+
+  const CachedDataDeleted(this.message);
+}

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rive/rive.dart';
 import 'package:rsue_schedule/blocs/schedule_bloc/schedule_bloc.dart';
 import 'package:rsue_schedule/blocs/settings_bloc/settings_bloc.dart';
+import 'package:rsue_schedule/generated/l10n.dart';
 import 'package:rsue_schedule/screens/schedule_screen.dart';
 import 'package:rsue_schedule/screens/search_page.dart';
 
@@ -19,7 +20,7 @@ class TeacherScreen extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Преподаватели'),
+          title: Text(S.of(context).teachers),
         ),
         body: CustomScrollView(
           slivers: [
@@ -120,7 +121,7 @@ class TeacherScreen extends StatelessWidget {
             ),
           ),
           Text(
-            'Отсутствует список преподавателей',
+            S.of(context).noTeachers,
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ],

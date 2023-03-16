@@ -132,4 +132,9 @@ class DBHelper {
       throw Exception('Ошибка создания базы данных');
     }
   }
+
+  void clearCachedData() async {
+    final db = await database;
+    await db.delete('cache');
+  }
 }

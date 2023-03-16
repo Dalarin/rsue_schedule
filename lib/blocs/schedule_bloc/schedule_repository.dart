@@ -44,4 +44,8 @@ class ScheduleRepository {
     final map = await _api.getAuditoriumByQuery(query);
     return map.map((element) => element.toString()).toList();
   }
+
+  Future<void> clearCachedData() async {
+    await _api.clearCachedData();
+  }
 }

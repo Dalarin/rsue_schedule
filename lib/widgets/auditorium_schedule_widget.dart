@@ -6,7 +6,8 @@ class AuditoriumScheduleWidget extends StatelessWidget {
   final int index;
   final Schedule schedule;
 
-  const AuditoriumScheduleWidget({Key? key, required this.schedule, required this.index})
+  const AuditoriumScheduleWidget(
+      {Key? key, required this.schedule, required this.index})
       : super(key: key);
 
   @override

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:schedule_api/src/api_repository.dart';
+import 'package:schedule_api/src/database.dart';
 
 import 'cache_interceptor.dart';
 
@@ -53,5 +54,9 @@ class ScheduleApi {
   /// Возвращает список аудиторий для запроса, введенного пользователем
   Future<List<dynamic>> getAuditoriumByQuery(String query) async {
     return await _apiRepository.getAuditoriumByQuery(query);
+  }
+
+  Future<void> clearCachedData() async {
+    DBHelper(7).clearCachedData();
   }
 }

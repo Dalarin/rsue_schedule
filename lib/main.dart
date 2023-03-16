@@ -6,6 +6,8 @@ import 'package:rsue_schedule/themes/themes.dart';
 import 'package:rsue_schedule/widgets/bottom_nav_bar.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'generated/l10n.dart';
+
 void main() {
   runApp(const Application());
 }
@@ -30,24 +32,24 @@ class Application extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           } else if (state is SettingsLoaded) {
             return MaterialApp(
+              onGenerateTitle: (context) => S.of(context).schedule,
               theme: lightTheme,
               darkTheme: darkTheme,
               themeMode: state.settings.themeMode,
+              supportedLocales: S.delegate.supportedLocales,
               localizationsDelegates: const [
+                S.delegate,
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
               ],
-              home: BlocProvider<SettingsBloc>.value(
-                value: context.read<SettingsBloc>(),
-                child: Builder(
-                  builder: (context) {
-                    if (state.settings.group.isNotEmpty) {
-                      return const BottomNavBar();
-                    }
-                    return InviteScreen(context.read<SettingsBloc>());
-                  },
-                ),
+              home: Builder(
+                builder: (context) {
+                  if (state.settings.group.trim().isNotEmpty) {
+                    return const BottomNavBar();
+                  }
+                  return InviteScreen(context.read<SettingsBloc>());
+                },
               ),
             );
           }

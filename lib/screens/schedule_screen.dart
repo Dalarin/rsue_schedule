@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rive/rive.dart';
 import 'package:rsue_schedule/blocs/schedule_bloc/schedule_bloc.dart';
+import 'package:rsue_schedule/generated/l10n.dart';
 import 'package:rsue_schedule/models/schedule.dart';
 import 'package:rsue_schedule/widgets/auditorium_schedule_widget.dart';
 import 'package:rsue_schedule/widgets/calendar_widget.dart';
@@ -43,7 +44,7 @@ class ScheduleScreen extends StatelessWidget {
         builder: (context) {
           return Scaffold(
             appBar: AppBar(
-              title: Text('Расписание ${request.values.first}'),
+              title: Text(S.of(context).scheduleOf(request.values.first)),
             ),
             body: SafeArea(
               child: Column(
@@ -155,7 +156,7 @@ class ScheduleScreen extends StatelessWidget {
           ),
         ),
         Text(
-          'Пар сегодня нет, можете расслабиться',
+          S.of(context).emptyLessons,
           style: Theme.of(context).textTheme.titleMedium,
         ),
       ],

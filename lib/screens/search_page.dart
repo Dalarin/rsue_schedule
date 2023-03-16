@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rive/rive.dart';
 import 'package:rsue_schedule/blocs/schedule_bloc/schedule_bloc.dart';
+import 'package:rsue_schedule/generated/l10n.dart';
 import 'package:rsue_schedule/screens/schedule_screen.dart';
 
 class SearchScreen extends StatelessWidget {
@@ -101,7 +102,7 @@ class SearchScreen extends StatelessWidget {
             ),
           ),
           Text(
-            'Ничего не найдено',
+            S.of(context).empty,
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ],

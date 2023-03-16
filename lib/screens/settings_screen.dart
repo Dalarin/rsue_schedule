@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rsue_schedule/blocs/settings_bloc/settings_bloc.dart';
+import 'package:rsue_schedule/generated/l10n.dart';
 import 'package:rsue_schedule/screens/invite_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -12,26 +13,51 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Настройки'),
+        title: Text(S.of(context).settings),
       ),
-      body: SafeArea(
-        child: Card(
-          margin: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildThemeListTile(),
-              _buildGroupListTile(context),
-            ],
+      body: BlocListener<SettingsBloc, SettingsState>(
+        listener: (context, state) {
+          if (state is CachedDataDeleted) {
+            _showSnackBar(context, state.message);
+          }
+        },
+        child: SafeArea(
+          child: Card(
+            margin: const EdgeInsets.symmetric(horizontal: 15),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildThemeListTile(),
+                _buildGroupListTile(context),
+                _buildClearCacheListTile(context),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
+  void _showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
+  }
+
+  Widget _buildClearCacheListTile(BuildContext context) {
+    return ListTile(
+      title: Text(S.of(context).clearCache),
+      onTap: () {
+        bloc.add(const ClearCache());
+      },
+    );
+  }
+
   Widget _buildGroupListTile(BuildContext context) {
     return ListTile(
-      title: const Text('Изменить группу'),
+      title: Text(S.of(context).changeGroup),
       onTap: () {
         Navigator.push(
           context,
@@ -48,21 +74,21 @@ class SettingsScreen extends StatelessWidget {
       bloc: bloc,
       builder: (context, state) {
         return ListTile(
-          title: const Text('Тема'),
+          title: Text(S.of(context).theme),
           trailing: DropdownButton<ThemeMode>(
             value: bloc.settings.themeMode,
-            items: const [
+            items: [
               DropdownMenuItem(
                 value: ThemeMode.system,
-                child: Text('Системная'),
+                child: Text(S.of(context).system),
               ),
               DropdownMenuItem(
                 value: ThemeMode.light,
-                child: Text('Светлая'),
+                child: Text(S.of(context).light),
               ),
               DropdownMenuItem(
                 value: ThemeMode.dark,
-                child: Text('Темная'),
+                child: Text(S.of(context).dark),
               ),
             ],
             onChanged: (themeMode) {
@@ -72,7 +98,7 @@ class SettingsScreen extends StatelessWidget {
             },
           ),
         );
-      }
+      },
     );
   }
 }

@@ -13,6 +13,7 @@ part 'schedule_state.dart';
 
 class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
   final ScheduleRepository _repository = ScheduleRepository();
+  final DateFormat _dateFormat = DateFormat('dd.MM.yyyy');
 
   ScheduleBloc() : super(ScheduleInitial()) {
     on<GetScheduleForTeacher>(_onGetScheduleForTeacher);
@@ -29,21 +30,12 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
   ) async {
     try {
       emit(ScheduleLoading());
-      if (event.dateTime.weekday != DateTime.sunday) {
-        final schedule = await _repository.getTeacherSchedule(
-          event.teacher,
-          DateFormat('dd.MM.yyyy').format(event.dateTime),
-        );
-        if (schedule != null) {
-          emit(ScheduleLoaded(
-            schedule: schedule,
-            selectedDate: event.dateTime,
-          ));
-        } else {
-          emit(const ScheduleError(message: 'Ошибка загрузки расписания'));
-        }
+      final schedule = await _repository.getTeacherSchedule(
+          event.teacher, _dateFormat.format(event.dateTime));
+      if (schedule != null) {
+        emit(ScheduleLoaded(schedule: schedule, selectedDate: event.dateTime));
       } else {
-        emit(ScheduleLoaded(schedule: const [], selectedDate: event.dateTime));
+        emit(const ScheduleError(message: 'Ошибка загрузки расписания'));
       }
     } on ScheduleException catch (e) {
       emit(ScheduleError(message: e.toString()));
@@ -58,21 +50,12 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
   ) async {
     try {
       emit(ScheduleLoading());
-      if (event.dateTime.weekday == DateTime.sunday) {
-        emit(ScheduleLoaded(schedule: const [], selectedDate: event.dateTime));
+      final schedule = await _repository.getGroupSchedule(
+          event.group, _dateFormat.format(event.dateTime));
+      if (schedule != null) {
+        emit(ScheduleLoaded(schedule: schedule, selectedDate: event.dateTime));
       } else {
-        final schedule = await _repository.getGroupSchedule(
-          event.group,
-          DateFormat('dd.MM.yyyy').format(event.dateTime),
-        );
-        if (schedule != null) {
-          emit(ScheduleLoaded(
-            schedule: schedule,
-            selectedDate: event.dateTime,
-          ));
-        } else {
-          emit(const ScheduleError(message: 'Ошибка загрузки расписания'));
-        }
+        emit(const ScheduleError(message: 'Ошибка загрузки расписания'));
       }
     } on ScheduleException catch (e) {
       emit(ScheduleError(message: e.toString()));
@@ -88,9 +71,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     try {
       emit(ScheduleLoading());
       final schedule = await _repository.getAuditoriumSchedule(
-        event.auditorium,
-        DateFormat('dd.MM.yyyy').format(event.dateTime),
-      );
+          event.auditorium, _dateFormat.format(event.dateTime));
       if (schedule != null) {
         emit(ScheduleLoaded(schedule: schedule, selectedDate: event.dateTime));
       } else {
