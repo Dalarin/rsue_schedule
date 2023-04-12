@@ -1,3 +1,5 @@
+import 'package:rsue_schedule/models/homework.dart';
+
 class Schedule {
   String group;
   String day;
@@ -7,6 +9,7 @@ class Schedule {
   String auditorium;
   String type;
   bool evenWeek;
+  List<Homework> homework;
 
   Schedule({
     required this.group,
@@ -17,6 +20,7 @@ class Schedule {
     required this.auditorium,
     required this.type,
     required this.evenWeek,
+    this.homework = const [],
   });
 
   @override

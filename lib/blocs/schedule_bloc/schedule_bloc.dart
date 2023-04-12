@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:rsue_schedule/blocs/schedule_bloc/homework_repository.dart';
 import 'package:rsue_schedule/blocs/schedule_bloc/schedule_repository.dart';
 import 'package:rsue_schedule/models/schedule.dart';
 import 'package:schedule_api/schedule_api.dart';
@@ -13,6 +14,7 @@ part 'schedule_state.dart';
 
 class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
   final ScheduleRepository _repository = ScheduleRepository();
+  final HomeworkRepository _hRepository = HomeworkRepository();
   final DateFormat _dateFormat = DateFormat('dd.MM.yyyy');
 
   ScheduleBloc() : super(ScheduleInitial()) {
@@ -53,6 +55,13 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       final schedule = await _repository.getGroupSchedule(
           event.group, _dateFormat.format(event.dateTime));
       if (schedule != null) {
+        for (var element in schedule) {
+          // Получаем домашнее задание для каждого lesson
+          element.homework = await _hRepository.getHomeworkForSchedule(
+            element,
+            event.dateTime,
+          );
+        }
         emit(ScheduleLoaded(schedule: schedule, selectedDate: event.dateTime));
       } else {
         emit(const ScheduleError(message: 'Ошибка загрузки расписания'));
